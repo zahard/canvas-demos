@@ -1,71 +1,140 @@
 <!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Canvas Demos by customplugins</title>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Canvas Demo 1</title>
+<script type="text/javascript">
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <div class="wrapper">
-      <header>
-        <h1>Canvas Demos</h1>
-        <p>Playling with canvas</p>
+window.addEventListener('load', eventWindowLoaded, false);
+function eventWindowLoaded() {
+	canvasApp();
+}
 
-        <p class="view"><a href="https://github.com/customplugins/canvas-demos">View the Project on GitHub <small>customplugins/canvas-demos</small></a></p>
+function canvasApp(){
 
-
-        <ul>
-          <li><a href="https://github.com/customplugins/canvas-demos/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/customplugins/canvas-demos/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/customplugins/canvas-demos">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
-
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
-
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
-
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
-
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/customplugins">customplugins</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
-    </div>
-    <script src="javascripts/scale.fix.js"></script>
-    
-  </body>
+	var theCanvas = document.getElementById("canvas"),
+		context = theCanvas.getContext("2d"),
+		center = xy(250,250),
+		viewPoint = xy(300,200),
+		maxRadius = 80,
+		minRadius = 20,
+		coils = [
+			{color:'#339944', radius: 20},
+			{color:'#33aa44', radius: 30},
+			{color:'#33bb44', radius: 40},
+			{color:'#33cc44', radius: 50},
+			{color:'#33dd44', radius: 60},
+			{color:'#33ee44', radius: 70},
+			{color:'#33ff44', radius: 80},
+		],
+		coilsLength = coils.length,
+		backCoils = [
+			{color:'#339944', radius: 15},
+			{color:'#339944', radius: 10},
+			{color:'#339944', radius: 5}
+		]
+		backCoilsLength = backCoils.length;
+	
+	
+	function animate() {
+		var i = 0, x, y;
+		
+		clearCanvas();
+		
+		xr = viewPoint.x - center.x;
+		yr = viewPoint.y - center.y;
+		
+		for ( i; i < coilsLength; i+=1) {
+			x = center.x + xr/coilsLength * i;
+			y = center.y + yr/coilsLength * i;
+			new Circle( x, y , coils[i].radius, coils[i].color ).draw();
+		}
+		
+		for ( i = 0; i < backCoilsLength; i+=1) {
+			x = center.x - xr/(coilsLength+backCoilsLength) * (i+1) /2 ;
+			y = center.y - yr/(coilsLength+backCoilsLength) * (i+1) /2 ;
+			new Circle( x, y , backCoils[i].radius, backCoils[i].color ).draw();
+		}
+		
+		
+		
+		requestAnimationFrame(animate)
+	}
+	
+	animate();
+	
+	
+	function Circle(x,y,r,color){
+		this.x = x;
+		this.y = y;
+		this.radius = r;
+		this.color = color || '#ccffcc';	
+		
+		Circle.prototype.draw = function() {
+			context.save();
+			context.fillStyle = this.color;
+			context.lineWidth = 2;
+			context.strokeStyle = this.color;
+			context.beginPath();
+			context.arc(this.x, this.y, this.radius,  rad(0) , rad(360), false );
+			context.stroke();
+			context.closePath();
+			context.restore();
+		}
+			
+		return this;
+	}
+	
+	
+	function rad( angle ) {
+		var radians = (Math.PI/180)*(angle-90);
+		return radians;
+	}
+	
+	
+	function xy(x,y){
+		return {x:x,y:y}
+	}
+	
+	
+	theCanvas.addEventListener('mousemove',function(e){
+		viewPoint = xy( e.clientX, e.clientY)
+	});
+	
+	function clearCanvas() {
+		context.save();
+		context.fillStyle = '#333333';
+		context.fillRect(0,0,theCanvas.width, theCanvas.height)
+		context.restore();
+	}
+	
+	window.Square = function (centerX, centerY, width, color ) {
+		this.x = centerX;
+		this.y = centerY;
+		this.width = width;
+		this.color = color || '#ccffcc';		
+		return this;
+	}
+	Square.prototype.draw = function(){
+		var x = this.x - this.width/2,
+			y = this.y - this.width/2;
+		context.save();
+		context.fillStyle = this.color;
+		context.fillRect(x, y, this.width, this.width);
+		context.restore();
+	}
+	
+	//s1 = new Square(100,100,40, '#ccffff');
+	//s1.draw();
+	
+	
+	
+}
+</script>
+</head>
+<body style="background:#ccc">
+<div style="position: absolute; top: 0px; left: 0px;" >
+	<canvas id="canvas" width="500" height="500" style="background:#fff" ></canvas>
+</div>
+</body>
 </html>
