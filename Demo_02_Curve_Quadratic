@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Ch2BaseFile - Template For Chapter 2 Examples</title>
+<title>Demo 02 - Quadratic Curve</title>
 <script type="text/javascript">
 window.addEventListener('load', eventWindowLoaded, false);
 function eventWindowLoaded() {
