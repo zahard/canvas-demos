@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ch2BaseFile - Template For Chapter 2 Examples</title>
+<script type="text/javascript">
+window.addEventListener('load', eventWindowLoaded, false);
+function eventWindowLoaded() {
+	canvasApp();
+}
+function canvasApp(){
+	var theCanvas = document.getElementById("canvas");
+	var cxt = theCanvas.getContext("2d");
+	
+	function start(){
+		
+		cxt.strokeStyle = '#ff3333';
+		cxt.lineWidth = 2;
+		
+		var mousePosition = xy(100,100),
+			curvePoint = xy(100,100),
+			curveStart = new Circle(250, 50, 5,'#339933', '#ccffcc'),
+			curveEnd   = new Circle(250, 400, 5,'#339933', '#ccffcc'),
+			point = new Circle(100, 100, 10,'#333399', '#ccccff'),
+			MOUSE_HOLDED = false;
+		
+		(function animate(){
+			clearCanvas();
+			
+			curveStart.draw();
+			curveEnd.draw();
+		
+			if( MOUSE_HOLDED ) {
+				point.move(mousePosition);
+				curvePoint = mousePosition;
+			}
+			
+			point.draw();
+			
+			cxt.beginPath();
+			cxt.moveTo(250, 50);
+			cxt.quadraticCurveTo(curvePoint.x,curvePoint.y, 250, 400)
+			cxt.stroke();
+			cxt.closePath();
+			
+			requestAnimationFrame(animate)
+		}());
+		
+		
+		theCanvas.addEventListener('mousemove',function(e){
+			mousePosition = {x:e.clientX, y:e.clientY};
+		});
+		
+		
+		document.body.addEventListener('mousedown',function(e){
+			var x = e.clientX,
+				y = e.clientY,
+				distance = Math.sqrt( Math.pow(x - point.x, 2), Math.pow(y - point.y, 2) );
+			
+			console.log( distance );
+			
+			if( point.radius > distance ) {
+				MOUSE_HOLDED = true;
+			} 
+		})
+		document.body.addEventListener('mouseup',function(e){
+			MOUSE_HOLDED = false;
+		});
+	}
+	
+	start();
+	
+	
+	function rad( angle ) {
+		var radians = (Math.PI/180)*(angle-90);
+		return radians;
+	}
+	
+	function Circle(x,y,r, strokeColor, fillColor ){
+		this.x = x;
+		this.y = y;
+		this.radius = r;
+		this.strokeColor = strokeColor || '#000000';	
+		this.fillColor = fillColor || null;	
+	
+		Circle.prototype.draw = function() {
+			cxt.save();
+			
+			cxt.beginPath();
+			cxt.arc(this.x, this.y, this.radius,  rad(0) , rad(360), false );
+			cxt.strokeStyle = this.strokeColor;
+			cxt.stroke();
+			if ( this.fillColor ) {			
+				cxt.lineWidth = 2;
+				cxt.fillStyle = this.fillColor;
+				cxt.fill();
+			} 
+			cxt.closePath();
+			
+			cxt.restore();
+		}
+		
+		Circle.prototype.move = function(position) {
+			this.x = position.x;
+			this.y = position.y;
+		}
+			
+		return this;
+	}
+	
+	function xy(x,y){
+		return {x:x,y:y}
+	}
+	
+	function clearCanvas() {
+		cxt.clearRect(0,0,theCanvas.width, theCanvas.height)
+	}
+	
+	
+}
+</script>
+</head>
+<body style="background:#ccc">
+<div style="position: absolute; top: 0px; left: 0px;" >
+	<canvas id="canvas" width="500" height="500" style="background:#fff" ></canvas>
+</div>
+</body>
+</html>
