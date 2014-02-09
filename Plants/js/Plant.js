@@ -42,7 +42,10 @@ AvailablePlant.prototype.draw = function() {
 	}
 	
 	map.fillStyle = this.plant.color;
-	map.fillRect( this.x + 10, this.y + 10, this.w - 20, this.w - 20 );
+	//map.fillRect( this.x + 10, this.y + 10, this.w - 20, this.w - 20 );
+
+	map.drawImage( this.plant.image, this.x + 10, this.y + 10, 40,40)
+	
 	
 	map.font = 'bold 18px Arial';
 	map.fillStyle = 'yellow';

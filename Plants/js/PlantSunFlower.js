@@ -6,6 +6,7 @@ PlantSunFlower = function() {
 	this.sunsDrawed = 0;
 	this.lastSunSpawned = new Date().getTime();
 	this.sunSpawnInterval = 5000;
+	this.image = $('img-sunflower');
 }
 extend(PlantSunFlower,Plant);
 
@@ -20,6 +21,11 @@ PlantSunFlower.prototype.update = function() {
 	}
 	this.sunsDrawed = 0;
 }
+
+PlantSunFlower.prototype.draw = function() {
+	cxt.drawImage( this.image, this.x - this.w , this.y -60, 80,80)
+}
+
 
 PlantSunFlower.prototype.updateSunsOrder = function() {
 
