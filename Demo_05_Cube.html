@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ch2BaseFile - Template For Chapter 2 Examples</title>
+<script type="text/javascript">
+window.addEventListener('load', eventWindowLoaded, false);
+function eventWindowLoaded() {
+	canvasApp();
+}
+function canvasApp(){
+	var theCanvas = document.getElementById("canvas");
+	var ctx = theCanvas.getContext("2d");
+	var  offsetRad = 0;
+	var ellipseH = 35;
+	var hRise = true;
+	
+	
+	function rad( angle ) {
+		var radians = (Math.PI/180)*(angle-90);
+		return radians;
+	}
+	
+	function Circle(x,y,r, strokeColor, fillColor ){
+		this.x = x;
+		this.y = y;
+		this.radius = r;
+		this.strokeColor = strokeColor || '#000000';	
+		this.fillColor = fillColor || null;	
+	
+		Circle.prototype.draw = function() {
+			ctx.save();
+			
+			ctx.beginPath();
+			ctx.arc(this.x, this.y, this.radius,  rad(0) , rad(360), false );
+			ctx.strokeStyle = this.strokeColor;
+			ctx.stroke();
+			if ( this.fillColor ) {			
+				ctx.lineWidth = 2;
+				ctx.fillStyle = this.fillColor;
+				ctx.fill();
+			} 
+			ctx.closePath();
+			
+			ctx.restore();
+		}
+		
+		Circle.prototype.move = function(position) {
+			this.x = position.x;
+			this.y = position.y;
+		}
+			
+		return this;
+	}
+	
+	
+	function extend(Child, Parent) {
+		var F = function() { }
+		F.prototype = Parent.prototype
+		Child.prototype = new F()
+		Child.prototype.constructor = Child
+		Child.superclass = Parent.prototype
+	}
+
+
+	
+	function xy(x,y){
+		return {x:x,y:y}
+	}
+	
+	function clearCanvas() {
+		ctx.clearRect(0,0,theCanvas.width, theCanvas.height)
+	}
+	
+	function animate(){
+		clearCanvas();
+		
+		centerX = 250;
+		centerY = 200;
+		
+		var offset = offsetRad*Math.PI/180;
+		
+		offsetRad++;
+		if( offsetRad >= 360 ) {
+			offsetRad=0;
+		}
+		
+		var ellipseH = 35;
+		var ellipseW = 90;
+		
+		
+		var apexes = [];
+		
+		for (var i = 0 * Math.PI; i < 2 * Math.PI; i += Math.PI/2 ) {
+			angle = i+offset;			
+			xPos = centerX - (ellipseH * Math.sin(angle)) * Math.sin(0 * Math.PI) + (ellipseW * Math.cos(angle)) * Math.cos(0 * Math.PI);
+			yPos = centerY + (ellipseW * Math.cos(angle)) * Math.sin(0 * Math.PI) + (ellipseH * Math.sin(angle)) * Math.cos(0 * Math.PI);
+			
+			apexes.push({x:xPos,y:yPos});
+			
+		}
+		
+		ctx.lineWidth = 2;
+			
+		var prevApex = {};
+		for(var num in apexes ) {
+			var apex = apexes[num];
+			
+			if( typeof prevApex.x !== 'undefined' ) {
+				ctx.beginPath();
+				ctx.strokeStyle = '#444';
+				ctx.moveTo(apex.x,apex.y);
+				ctx.lineTo(prevApex.x,prevApex.y);
+				ctx.stroke();
+				
+				
+				ctx.beginPath();
+				ctx.strokeStyle = '#444';
+				ctx.moveTo(apex.x,apex.y+115);
+				ctx.lineTo(prevApex.x,prevApex.y+115);
+				ctx.stroke();
+				
+			}
+			prevApex = apex;
+			if(num == 3){
+				ctx.beginPath();
+				ctx.strokeStyle = '#444';
+				ctx.moveTo(apex.x,apex.y);
+				ctx.lineTo(apexes[0].x,apexes[0].y);
+				ctx.stroke();
+				
+				ctx.beginPath();
+				ctx.strokeStyle = '#444';
+				ctx.moveTo(apex.x,apex.y+115);
+				ctx.lineTo(apexes[0].x,apexes[0].y+115);
+				ctx.stroke();
+			}
+			
+			ctx.beginPath();
+			ctx.strokeStyle = '#444';
+			ctx.moveTo(apex.x,apex.y);
+			ctx.lineTo(apex.x,apex.y+115);
+			ctx.stroke();
+			/*
+			c1 = new Circle(apex.x,apex.y,5,'#222','#444');
+			c1.draw();
+			
+			c2 = new Circle(apex.x,apex.y+115,5,'#222','#444');
+			c2.draw();
+			*/	
+			
+			
+			if( num == 0 ) {
+				ctx.globalAlpha=0.5;
+				ctx.beginPath();
+				ctx.moveTo(apexes[0].x,apexes[0].y+115);
+				ctx.lineTo(apexes[1].x,apexes[1].y+115);
+				ctx.lineTo(apexes[2].x,apexes[2].y+115);
+				ctx.lineTo(apexes[3].x,apexes[3].y+115);
+				ctx.fillStyle = 'green';
+				ctx.fill();
+				ctx.closePath();
+				
+			
+				var nextApex = apexes[1];
+				
+				//ctx.globalAlpha=0.7;
+				ctx.beginPath();
+				ctx.moveTo(apex.x,apex.y);
+				ctx.lineTo(apex.x,apex.y+115);
+				ctx.lineTo(nextApex.x,nextApex.y+115);
+				ctx.lineTo(nextApex.x,nextApex.y);
+				ctx.lineTo(apex.x,apex.y);
+				ctx.fillStyle = 'blue';
+				ctx.fill();
+				ctx.closePath();
+				
+				apex = nextApex;
+				var nextApex = apexes[2];
+				
+				//ctx.globalAlpha=0.7;
+				ctx.beginPath();
+				ctx.moveTo(apex.x,apex.y);
+				ctx.lineTo(apex.x,apex.y+115);
+				ctx.lineTo(nextApex.x,nextApex.y+115);
+				ctx.lineTo(nextApex.x,nextApex.y);
+				ctx.lineTo(apex.x,apex.y);
+				ctx.fillStyle = 'red';
+				ctx.fill();
+				ctx.closePath();
+				
+				/*
+				ctx.beginPath();
+				ctx.moveTo(apexes[0].x,apexes[0].y);
+				ctx.lineTo(apexes[1].x,apexes[1].y);
+				ctx.lineTo(apexes[2].x,apexes[2].y);
+				ctx.lineTo(apexes[3].x,apexes[3].y);
+				ctx.fillStyle = 'yellow';
+				ctx.fill();
+				ctx.closePath();*/
+				
+				
+				ctx.globalAlpha=1;
+			}
+			
+			
+			
+			
+		}
+		
+		
+		requestAnimationFrame(animate)
+	}
+	
+	
+	animate();
+	
+	/*
+		clearCanvas();
+		
+		ctx.strokeStyle = 'red';
+		ctx.lineWidth  = 1;
+		
+		ctx.moveTo(100,100);
+		
+		ctx.lineTo(180,120);
+		ctx.lineTo(180,220);
+		ctx.lineTo(100,200);
+		ctx.lineTo(100,100);
+		
+		//ctx.closePath();
+		ctx.stroke();
+		*/
+	function drawEllipseByCenter(ctx, cx, cy, w, h) {
+  drawEllipse(ctx, cx - w/2.0, cy - h/2.0, w, h);
+}
+
+function drawEllipse(ctx, x, y, w, h) {
+  var kappa = .5522848,
+      ox = (w / 2) * kappa, // control point offset horizontal
+      oy = (h / 2) * kappa, // control point offset vertical
+      xe = x + w,           // x-end
+      ye = y + h,           // y-end
+      xm = x + w / 2,       // x-middle
+      ym = y + h / 2;       // y-middle
+
+  ctx.beginPath();
+  ctx.moveTo(x, ym);
+  ctx.bezierCurveTo(x, ym - oy, xm - ox, y, xm, y);
+  ctx.bezierCurveTo(xm + ox, y, xe, ym - oy, xe, ym);
+  ctx.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
+  ctx.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
+  ctx.closePath();
+  ctx.stroke();
+}
+	
+	
+}
+
+/*
+ctx.beginPath();
+		for (var i = 0 * Math.PI; i < 2 * Math.PI; i += 0.01 ) {
+			xPos = centerX - (40 * Math.sin(i)) * Math.sin(0 * Math.PI) + (90 * Math.cos(i)) * Math.cos(0 * Math.PI);
+			yPos = centerY + (90 * Math.cos(i)) * Math.sin(0 * Math.PI) + (40 * Math.sin(i)) * Math.cos(0 * Math.PI);
+
+			if (i == 0) {
+				ctx.moveTo(xPos, yPos);
+			} else {
+				ctx.lineTo(xPos, yPos);
+			}
+		}
+		
+		ctx.lineWidth = 2;
+		ctx.strokeStyle = "#232323";
+		ctx.stroke();
+		ctx.closePath();
+*/
+
+</script>
+</head>
+<body style="background:#ccc">
+<div style="position: absolute; top: 0px; left: 0px;" >
+	<canvas id="canvas" width="500" height="500" style="background:#fff" ></canvas>
+</div>
+</body>
+</html>

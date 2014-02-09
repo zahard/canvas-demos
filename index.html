@@ -1,20 +1,156 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Canvas Demos</title>
-<link rel="stylesheet" href="stylesheets/styles.css">
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Canvas Demos</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+		<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+		<style type="text/css">
+			h1.heading {
+				text-align: center;
+				font-size: 50px;
+			}
+			img.demo-img {
+				padding: 0;
+				width: 100%;
+				margin-bottom: 10px;
+				border: 1px solid #bbb;
+				height: 230px;
+			}
+			p.demo-descr {
 
-</head>
-<body style="">
-<h1>HTML5 Canvas Demos</h1>
-<p>
-<ul>
-<li><a href="Demo_01_Circles.html">01 - Circles</a></li>
-<li><a href="Demo_02_Curve_Quadratic.html">02 - Quadratic Curve</a></li>
-<li><a href="Demo_03_Curve_Bezier.html">03 - Bezier Circles</a></li>
-<li><a href="Demo_04_Life_Game.html">04 - Life Game</a></li>
-</ul>
-</p>
-</body>
+			}
+
+			.demo {
+				height: 397px;
+			}
+
+			.demo h2 a {
+				color:#333;
+				padding-left: 10px;
+			}
+
+			footer {
+				text-align: center;
+				margin: 50px 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<h1 class="heading">My Canvas Experiments</h1>
+				<p class="lead"></p>
+			</div>
+			<div class="row demos">
+
+				<div class="col-md-4 demo">
+					<h2><span class="label label-primary">#10</span><a href="PitCraft/Demo_10_PitCraft.html">PitCraft</a></h2>
+					<img src="demo10.png" class="demo-img"/>
+					<p class="demo-descr" >Minecraft-like game. Inifinite world, destroy and setup blocks, dynamic lightness.</p>
+					<p><a target="_blank" class="btn btn-success" href="PitCraft/Demo_10_PitCraft.html" role="button">View Demo »</a>
+					</p>
+				</div>
+
+				<div class="col-md-4 demo">
+					<h2><span class="label label-primary">#9</span><a href="Demo_09_Plants.html">Plants vs Zombies</a></h2>
+					<img src="demo9.png" class="demo-img"/>
+					<p class="demo-descr" >My attempt to replicate "Plants vs Zombies" game mechanics. Zombies textures missed for now =)</p>
+					<p><a target="_blank" class="btn btn-success" href="Demo_09_Plants.html" role="button">View Demo »</a>
+					</p>
+				</div>
+
+				<div class="col-md-4 demo">
+					<h2>
+						<span class="label label-primary">#8</span>
+						<a href="Demo_07_Bounce.html">Bounce</a>
+					</h2>
+					<img src="demo8.png" class="demo-img"/>
+					<p class="demo-descr" >Bounce game, insiped by old school Nokia game</p>
+					<p><a target="_blank" class="btn btn-success" href="Demo_07_Bounce.html" role="button">View Demo »</a>
+					</p>
+				</div>
+
+				<div class="col-md-4 demo">
+					<h2>
+						<span class="label label-primary">#7</span>
+						<a href="Demo_07_Rockets.html">Rockets Launcher</a>
+					</h2>
+					<img src="demo7.png" class="demo-img"/>
+					<p class="demo-descr" >Small game, you need destory enemy tanks.</p>
+					<p><a target="_blank" class="btn btn-success" href="Demo_07_Rockets.html" role="button">View Demo »</a>
+					</p>
+				</div>
+
+				<div class="col-md-4 demo">
+					<h2>
+						<span class="label label-primary">#6</span>
+						<a href="Demo_06_Snake.html">Snake</a>
+					</h2>
+					<img src="demo6.png" class="demo-img"/>
+					<p class="demo-descr" >Snake game on torus surface </p>
+					<p><a target="_blank" class="btn btn-success" href="Demo_06_Snake.html" role="button">View Demo »</a></p>
+				</div>
+
+				<div class="col-md-4 demo">
+					<h2>
+						<span class="label label-primary">#5</span>
+						<a href="Demo_05_Cube.html">Cube</a>
+					</h2>
+					<img src="demo5.png" class="demo-img"/>
+					<p class="demo-descr" >Spinning Cube projection</p>
+					<p><a target="_blank" class="btn btn-success" href="Demo_05_Cube.html" role="button">View Demo »</a></p>
+				</div>
+
+				<div class="col-md-4 demo">
+					<h2>
+						<span class="label label-primary">#4</span>
+						<a href="Demo_04_Life_Game.html">Life Game</a>
+					</h2>
+					<img src="demo4.png" class="demo-img"/>
+					<p class="demo-descr" >Conway's Game of Life</p>
+					<p><a target="_blank" class="btn btn-success" href="Demo_04_Life_Game.html" role="button">View Demo »</a></p>
+				</div>
+
+				<div class="col-md-4 demo">
+					<h2>
+						<span class="label label-primary">#3</span>
+						<a href="Demo_03_Curve_Bezier.html">Bezier Curve</a>
+					</h2>
+					<img src="demo2.png" class="demo-img"/>
+					<p class="demo-descr" >Continue experiments with curves, add mouse info block</p>
+					<p><a target="_blank" class="btn btn-success" href="Demo_03_Curve_Bezier.html" role="button">View Demo »</a></p>
+				</div>
+
+				<div class="col-md-4 demo">
+					<h2>
+						<span class="label label-primary">#2</span>
+						<a href="Demo_02_Curve_Quadratic.html">Quadratic Curve</a>
+					</h2>
+					<img src="demo3.png" class="demo-img"/>
+					<p class="demo-descr" >Learning curves and mouse drag</p>
+					<p><a target="_blank" class="btn btn-success" href="Demo_02_Curve_Quadratic.html" role="button">View Demo »</a></p>
+				</div>
+
+				<div class="col-md-4 demo">
+					<h2>
+						<span class="label label-primary">#1</span>
+						<a href="Demo_01_Circles.html">Circles</a>
+					</h2>
+					<img src="demo1.png" class="demo-img"/>
+					<p class="demo-descr" >Playing with perspective and mouse movement events</p>
+					<p><a target="_blank" class="btn btn-success" href="Demo_01_Circles.html" role="button">View Demo »</a></p>
+				</div>
+
+
+			</div>
+			<footer class="center">
+				<p>© <a title="Zakhar Portyanov on LinkedIn" href="http://ua.linkedin.com/pub/zakhar-portyanov/33/117/83b/">Zakhar Portyanov</a> 2014</p>
+			</footer>
+		</div>
+		<a href="https://github.com/zahard"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>
+	
+		<script src="https://code.jquery.com/jquery.js"></script>
+		<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+	</body>
 </html>
