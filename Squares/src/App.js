@@ -47,7 +47,7 @@ function Game(width, height)
 
 	this.generateTiles();
 
-	this.acc = 0.5;
+	this.acc = 0.3;
 
 	this.swapSpeed = 4;
 	this.fastSwapSpeed = 6;
@@ -92,7 +92,7 @@ Game.prototype = {
 	//Used when some tile explode and we need add new tiles
 	//and make fall animation of existing
 	updateColsTiles: function(columns)
-	{	
+	{
 		var u = {}, uniqueCols = [];
 		for (var i = 0, l = columns.length; i < l; ++i){
 			if(u.hasOwnProperty(columns[i])) {
@@ -180,16 +180,21 @@ Game.prototype = {
 	},
 
 
+	checkComboQueue: [],
+
 	checkForCombo: function(tile)
 	{
+		// if( this.comboIsRunning ) {
+		// 	this.checkComboQueue.push(tile);
+		// 	return;
+		// }
+
 		var dirs = [
 			{x:0,y:1},
-			{x:0,y:-1},
-			{x:1,y:0},
-			{x:-1,y:0},
+			{x:1,y:0}
 		];
 		var color = tile.color;
-		var d;
+		var d,t;
 
 		var foundCombos = []
 
@@ -198,47 +203,113 @@ Game.prototype = {
 		{
 			var comboStep = 1;
 			d = dirs[i];
+
+			//Add current tile to tiles used in combo
+			var comboTiles = [{
+				x:tile.gridX,
+				y:tile.gridY,
+			}];
+
 			while( t = this.getTile(tile.gridX + comboStep*d.x, tile.gridY + comboStep * d.y) )
 			{
-				if(t.color != color) {
+				if (!t || t.falling || t.color != color)
+				{
 					break;
 				}
-
+				
+				comboTiles.push({
+					x: tile.gridX + comboStep*d.x,
+					y: tile.gridY + comboStep*d.y
+				});
 				comboStep++;
 			}
 
-			if(comboStep > 2) {
-				foundCombos.push({
-					dx: d.x,
-					dy: d.y,
-					combo: comboStep
-				})
+			//Check in reverse direction
+			
+			var reverseStep = 1;
+			while( t = this.getTile(tile.gridX - reverseStep*d.x, tile.gridY - reverseStep * d.y) ) {
+				if (!t || t.falling || t.color != color)
+				{
+					break;
+				}
+				comboTiles.push({
+					x: tile.gridX - reverseStep*d.x,
+					y: tile.gridY - reverseStep*d.y
+				});
+				reverseStep++;
+			}
+
+			//console.log('We found ' + comboTiles.length + 'similar tile by ' + ((i==0 )? 'vertical': 'horizontal') );
+
+			if( comboTiles.length > 2 ) {
+				foundCombos.push(comboTiles)
 			}
 		}
 
 		if (foundCombos.length)
 		{
-			tile.empty = true;
-			var updateCols = [tile.gridX];
+			var updateCols = [];
 
 			for(var i = 0; i < foundCombos.length; i++)
 			{
-				var c = foundCombos[i];
+				var combo = foundCombos[i];
 				var gx,gy;
 
-				for(var combo = 1; combo < c.combo; combo++) {
-					gy = tile.gridY + combo * c.dy;
-					gx = tile.gridX + combo * c.dx,
-					this.getTile(gx, gy).empty = true; 
-					updateCols.push(gx);
+				for(var c = 0; c < combo.length; c++)
+				{
+					this.getTile(combo[c].x, combo[c].y).empty = true; 
+					updateCols.push(combo[c].x);
 				}
 			}
 
+			this.runCombo();
 			this.updateColsTiles(updateCols);
+
 		}
 
 		return foundCombos.length > 0;
 		
+	},
+
+	comboIsRunning: false,
+
+	runCombo: function()
+	{
+		console.log('RUN COMBO')
+		this.comboIsRunning = true;
+	},
+
+	endCombo: function()
+	{
+		console.log('END COMBO')
+
+		
+		for(var i=0; i<this.colsToCheck.length;i++)
+		{
+			this.checkColumnForCombo(this.colsToCheck[i]);
+		}
+
+		this.comboIsRunning = false;
+	},
+
+	checkColumnForCombo: function(x)
+	{
+		for (var y = 7; y >= 0; y--)
+		{
+			if( this.checkForCombo(this.getTile(x,y)) )
+			{
+				break;
+			}
+		}
+	},
+
+	onTileFall: function(tile)
+	{
+		//console.log(tile)
+		
+		//this.checkComboQueue.push(tile)
+		
+		//this.checkForCombo(tile);
 	},
 
 	getTile: function(x,y)
@@ -258,6 +329,7 @@ Game.prototype = {
 		//If we have columns that need to be updated
 		if (this.colsToUpdate.length)
 		{
+			this.colsToUpdate = this.colsToUpdate.sort(function(a,b) {return a - b});
 			var x,column;
 			for (var j = 0; j < this.colsToUpdate.length; j++)
 			{
@@ -282,6 +354,7 @@ Game.prototype = {
 								{
 									firstFallFound = true;
 									column[sy].falling = true;
+									column[sy].speedY = 0;
 									break;
 								}		
 							}
@@ -312,8 +385,9 @@ Game.prototype = {
 				}
 
 				//If whole column is empty make last tile falling
-				if( ! firstFallFound) {
+				if( ! firstFallFound && missedTiles) {
 					newColumn[missedTiles-1].falling = true;
+					newColumn[missedTiles-1].speedY = 0;
 					this.fallingTiles.push({
 						x:x,
 						y:missedTiles-1
@@ -332,9 +406,21 @@ Game.prototype = {
 				this.tiles[x] = newColumn;
 			}
 
+			this.colsToCheck = this.colsToUpdate;
 			this.colsToUpdate = [];
 		}
 
+
+		if (this.checkComboQueue.length )
+		{
+			for(var i = 0; i < this.checkComboQueue.length; i++)
+			{
+				console.log('Check combo for queue ' + this.checkComboQueue[i].gridX + ' ' + this.checkComboQueue[i].gridY);
+				this.checkForCombo( this.checkComboQueue[i]);
+			}
+
+			this.checkComboQueue = [];
+		}
 
 		if (this.fallingTiles.length)
 		{	
@@ -354,6 +440,7 @@ Game.prototype = {
 					{
 						tile.foundUpper = true;
 						upperTile.falling = true;
+						upperTile.speedY = 0;
 						newFallingTiles.push({
 							x: upperTile.gridX,
 							y: upperTile.gridY,
@@ -369,6 +456,9 @@ Game.prototype = {
 					tile.falling = false;
 					tile.speedY = 0;
 					tile.foundUpper = false;
+
+					this.onTileFall(tile);
+
 				} else {
 					newFallingTiles.push(pos);
 				}
@@ -377,6 +467,11 @@ Game.prototype = {
 			}
 
 			this.fallingTiles = newFallingTiles;
+
+			if (newFallingTiles.length == 0)
+			{
+				this.endCombo();
+			}
 		}
 
 
@@ -443,6 +538,8 @@ Game.prototype = {
 			needRedraw = true;
 
 		}
+
+		
 
 		return needRedraw;
 
