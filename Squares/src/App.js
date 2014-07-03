@@ -152,6 +152,7 @@ Game.prototype = {
 
 	resetTimer: function()
 	{
+		clearTimeout(this.timerTimeout);
 		this.timer = this.level.time;
 		this.updateTimer();
 	},
